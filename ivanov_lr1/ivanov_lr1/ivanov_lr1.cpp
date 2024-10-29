@@ -35,8 +35,19 @@ Pipe AddPipe()
 void PrintAddPipe(Pipe new_pipe)
 {
 	cout << endl << "Info about your pipe..." << endl;
-	cout << "Name: " << new_pipe.pipe_name << "\tLength: " << new_pipe.pipe_length
-		<< "\tDiameter: " << new_pipe.pipe_diameter << endl;
+	if (new_pipe.pipe_repair == false)
+		cout << "Name: " << new_pipe.pipe_name << "\tLength: " << new_pipe.pipe_length
+		<< "\tDiameter: " << new_pipe.pipe_diameter << "\tRepair: No" << endl;
+	else
+		cout << "Name: " << new_pipe.pipe_name << "\tLength: " << new_pipe.pipe_length
+		<< "\tDiameter: " << new_pipe.pipe_diameter << "\tRepair: Yes" << endl;
+}
+
+void RepairPipe(Pipe& new_pipe)
+{
+	new_pipe.pipe_repair = !new_pipe.pipe_repair;
+	cout << endl << "You have changed repair status!";
+	PrintAddPipe(new_pipe);
 }
 
 Station AddStation()
@@ -61,6 +72,16 @@ void PrintAddStation(Station new_station)
 		<< "\tActive workshops: " << new_station.station_act_workshops << "\tEfficiency: "
 		<< new_station.station_efficiency << endl;
 }
+
+void EditStation(Station& new_station)
+{
+	int act_workshops;
+	cout << "Enter the number of active workshops: ";
+	cin >> act_workshops;
+	new_station.station_act_workshops = act_workshops;
+	PrintAddStation(new_station);
+}
+
 
 int main()
 {
@@ -106,6 +127,23 @@ int main()
 			PrintAddStation(station0);
 			break;
 		}
+
+		case 4:
+		{
+			RepairPipe(pipe0);
+			break;
+		}
+		case 5:
+		{
+			EditStation(station0);
+			break;
+		}
+		case 0:
+		{
+			return false;
+			break;
+		}
+
 		default:
 		{
 			cout << endl << "There is no such command, please, try again" << endl;
