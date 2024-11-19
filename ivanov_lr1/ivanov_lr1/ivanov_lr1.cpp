@@ -172,35 +172,31 @@ void EditStation(Station& new_station)
 	PrintAddStation(new_station);
 }
 
-void FileRecord(Pipe pipe_data, Station station_data)
-{
-	ofstream fout("info");
-	if (pipe_data.pipe_name == "None")
-	{
+void SavePipe(const Pipe& pipe_data) {
+	ofstream fout("pipe_info.txt");
+	if (pipe_data.pipe_name == "None") {
 		cout << "Nothing to record about pipe!\n";
 	}
-	else
-	{
+	else {
 		cout << "Info about the pipe is written to a file!\n";
-		if (fout)
-		{
-			fout << "Info about your pipe...\n";
+		if (fout) {
 			fout << pipe_data.pipe_name << endl;
 			fout << pipe_data.pipe_length << endl;
 			fout << pipe_data.pipe_diameter << endl;
 			fout << pipe_data.pipe_repair << endl;
 		}
 	}
-	if (station_data.station_name == "None")
-	{
+	fout.close();
+}
+
+void SaveStation(const Station& station_data) {
+	ofstream fout("station_info.txt");
+	if (station_data.station_name == "None") {
 		cout << "Nothing to record about station!\n";
 	}
-	else
-	{
+	else {
 		cout << "Info about the station is written to a file!\n";
-		if (fout)
-		{
-			fout << "Info about your station...\n";
+		if (fout) {
 			fout << station_data.station_name << endl;
 			fout << station_data.station_workshops << endl;
 			fout << station_data.station_act_workshops << endl;
@@ -209,58 +205,39 @@ void FileRecord(Pipe pipe_data, Station station_data)
 	}
 	fout.close();
 }
-void FileOutput(Pipe& pipe_data, Station& station_data)
-{
-	pipe_data = { "None" };
-	station_data = { "None" };
-	ifstream fin("info");
-	if (fin)
-	{
-		string zero_mean;
-		int pipe_flag = 0;
-		int station_flag = 0;
-		while (getline(fin, zero_mean))
-		{
-			if (zero_mean == "Info about your pipe...")
-			{
-				cout << "\nThe pipe data is obtained from the file!" << endl;
-				cout << "\nInfo about your pipe..." << endl;
-				getline(fin, pipe_data.pipe_name);
-				cout << "Name of the pipe: " << pipe_data.pipe_name << endl;
-				fin >> pipe_data.pipe_length;
-				cout << "Length of the pipe: " << pipe_data.pipe_length << endl;
-				fin >> pipe_data.pipe_diameter;
-				cout << "Diameter of the diameter: " << pipe_data.pipe_diameter << endl;
-				fin >> pipe_data.pipe_repair;
-				cout << "Repair status of the pipe: " << pipe_data.pipe_repair << endl;
-				pipe_flag += 1;
-			}
-			if (zero_mean == "Info about your station...")
-			{
-				cout << "\nThe station data is obtained from the file!" << endl;
-				cout << "\nInfo about your station..." << endl;
-				getline(fin, station_data.station_name);
-				cout << "Name of the station: " << station_data.station_name << endl;
-				fin >> station_data.station_workshops;
-				cout << "Number of workshops: " << station_data.station_workshops << endl;
-				fin >> station_data.station_act_workshops;
-				cout << "Number of active workshops: " << station_data.station_act_workshops << endl;
-				fin >> station_data.station_efficiency;
-				cout << "Station efficiency indicator: " << station_data.station_efficiency << endl;
-				station_flag += 1;
-			}
-		}
-		if (pipe_flag == 0)
-		{
-			cout << "\nNo info about pipe!" << endl;
-		}
-		if (station_flag == 0)
-		{
-			cout << "\nNo info about station!" << endl;
-		}
-		fin.close();
+
+void LoadPipe(Pipe& pipe_data) {
+	ifstream fin("pipe_info.txt");
+	if (fin) {
+		getline(fin, pipe_data.pipe_name);
+		fin >> pipe_data.pipe_length;
+		fin >> pipe_data.pipe_diameter;
+		fin >> pipe_data.pipe_repair;
+		cout << "\nThe pipe data is obtained from the file!" << endl;
+		PrintAddPipe(pipe_data);
 	}
+	else {
+		cout << "No pipe data found in file!\n";
+	}
+	fin.close();
 }
+
+void LoadStation(Station& station_data) {
+	ifstream fin("station_info.txt");
+	if (fin) {
+		getline(fin, station_data.station_name);
+		fin >> station_data.station_workshops;
+		fin >> station_data.station_act_workshops;
+		fin >> station_data.station_efficiency;
+		cout << "\nThe station data is obtained from the file!" << endl;
+		PrintAddStation(station_data);
+	}
+	else {
+		cout << "No station data found in file!\n";
+	}
+	fin.close();
+}
+
 
 int main()
 {
@@ -318,16 +295,17 @@ int main()
 			EditStation(station0);
 			break;
 		}
-		case 6:
-		{
-			FileRecord(pipe0, station0);
+		case 6: {
+			SavePipe(pipe0);
+			SaveStation(station0);
 			break;
 		}
-		case 7:
-		{
-			FileOutput(pipe0, station0);
+		case 7: {
+			LoadPipe(pipe0);
+			LoadStation(station0);
 			break;
 		}
+
 		case 0:
 		{
 			return false;
